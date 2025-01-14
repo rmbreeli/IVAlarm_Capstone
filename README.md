@@ -1,2 +1,15 @@
 # IVAlarm_Capstone
 This is our Capstone Project for the F24-S25 year at UARK!
+
+This project will assist nurses with identifying alarms within a hospital. 
+
+IV Alarm Systems alert nurses by beeping at different rates and pitches. Our project will automate alerting the nurses by identifying the level of pitch from the alarm and sending the data 
+
+Languages Used:
+Python (backend)
+React? (frontend)
+
+Required Installations:
+
+SoundDevice Librosa Numpy:
+    pip install sounddevice librosa numpy
