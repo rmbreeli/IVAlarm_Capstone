@@ -15,7 +15,7 @@
   }
   
   .info-box {
-    background-color: #81D2C7; 
+    background-color: #81D2C7;
     display: flex;
     justify-content: space-between;
     padding: 10px 20px;
@@ -55,24 +55,28 @@
     margin: 0 10px;
     height: 80vh;
     overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
   
   .low-priority {
-    background-color: #28a745; 
+    background-color: #28a745;
     color: black;
     text-align: center;
     border: 2px solid black;
   }
   
   .medium-priority {
-    background-color: #ffbf00; 
+    background-color: #ffbf00;
     color: black;
     text-align: center;
     border: 2px solid black;
   }
   
   .high-priority {
-    background-color: #dc3545; 
+    background-color: #dc3545;
     color: black;
     text-align: center;
     border: 2px solid black;
@@ -84,14 +88,26 @@
     text-decoration: underline;
   }
   
-  .notification-box {
-    background-color: white;  
-    border: 1px solid black;  
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    height: 60px;
+  .column h2 {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin: 0;
+    padding: 10px 0;
+    background-color: inherit; 
+    margin-bottom: 20px;
+  }
+  
+  .column.low-priority h2 {
+    background-color: #28a745;
+  }
+  
+  .column.medium-priority h2 {
+    background-color: #ffbf00;
+  }
+  
+  .column.high-priority h2 {
+    background-color: #dc3545;
   }
   
   .notification-box p {
@@ -99,3 +115,67 @@
     font-size: 14px;
     font-family: Arial, sans-serif;
   }
+  
+  .notification-box {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    height: 80px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    animation: fade-in 0.5s ease-in-out;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  }
+  
+  .notification-box.fade-out {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .resolve-button {
+    border: 1px solid black;
+    background-color: lightcoral;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .resolve-button:hover {
+    background-color: crimson;
+  }
+  
+  @keyframes fade-out-scale {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
+  
+  .notification-box.fade-out {
+    animation: fade-out-scale 1.5s forwards;
+  }
+  
+  .column .notification-box {
+    flex-shrink: 0;
+  }
+  

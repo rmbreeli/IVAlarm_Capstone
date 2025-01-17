@@ -12,6 +12,7 @@ function LoginPage() {
   // Function to handle sign-in
   const handleSignIn = () => {
     if (username && password) {
+      sessionStorage.setItem("username", username);
       navigate("/home"); // Redirect to the homepage
     } else {
       alert("Please fill in both the username and password.");
