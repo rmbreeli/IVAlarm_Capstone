@@ -22,8 +22,9 @@ After pulling the latest changes from the repository, open a terminal and naviga
 
 
 2. **Install Dependencies**
-Run the following command to install all necessary dependencies:
+Run the following commands to install all necessary dependencies:
 `npm install`
+`npm install react-router-dom`
 
 3. **Start the Development Server**
 Once the installation is complete, start the React development server:
