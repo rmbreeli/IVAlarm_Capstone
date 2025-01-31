@@ -74,6 +74,15 @@ function HomePage() {
   const [notificationId, setNotificationId] = useState(1);
 
   useEffect(() => {
+    fetch("http://localhost:5000/api/get-alarms") // Ensure this matches your Flask backend URL
+      .then(response => response.json())
+      .then(data => {
+        console.log("Received Data from Backend:", data); // Print data to browser console
+      })
+      .catch(error => console.error("Error fetching data:", error));
+  }, []);
+  
+  useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
