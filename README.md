@@ -11,5 +11,5 @@ React? (frontend)
 
 Required Installations:
 
-SoundDevice, Librosa, Numpy, Soundfile, Scipy, Pydub
-    pip install sounddevice librosa numpy soundfile scipy pydub
+SoundDevice, Librosa, Numpy, Soundfile, Scipy, Pydub, Flask
+    pip install sounddevice librosa numpy soundfile scipy pydub flask
