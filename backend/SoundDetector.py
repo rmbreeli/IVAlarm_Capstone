@@ -1,6 +1,12 @@
 import librosa
 import numpy as np
 import os
+from flask import Flask, jsonify
+from flask_cors import CORS
+
+
+app = Flask(__name__)
+CORS(app)
 
 # Define the target beep frequencies (in Hz)
 beep_frequencies = {
@@ -36,32 +42,66 @@ def classify_beep(detected_pitch, beep_frequencies, tolerance=50):
             return beep
     return "Unknown beep"
 
-# Main function
-def main(file_path):
-    print("Loading audio...")
-    y, sr = load_audio(file_path)
+
+
+# API Endpoint: Process MP3 files in the "alarm_sounds" folder
+@app.route('/api/get-alarms', methods=['GET'])
+def get_alarms():
+    folder_path = "IVAlarm_Capstone/alarm_sounds"
+    if not os.path.exists(folder_path):
+        return jsonify({"error": "Alarm sounds folder not found!"}), 404
+
+    alarm_data = []
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith(".mp3"):
+            file_path = os.path.join(folder_path, file_name)
+            y, sr = load_audio(file_path)
+            detected_pitch = detect_pitch(y, sr)
+            beep_class = classify_beep(detected_pitch, beep_frequencies)
+
+            alarm_data.append({
+                "file_name": file_name,
+                "detected_pitch": float(detected_pitch),  # Convert to standard float
+                "beep_class": beep_class
+            })
+
+    print("Sending Data to Frontend:", alarm_data)  # Print data in terminal
+
+    return jsonify(alarm_data)
+
+
+
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
+# # Main function
+# def main(file_path):
+#     print("Loading audio...")
+#     y, sr = load_audio(file_path)
     
-    print("Detecting pitch...")
-    detected_pitch = detect_pitch(y, sr)
-    print(f"Detected pitch: {detected_pitch:.2f} Hz")
+#     print("Detecting pitch...")
+#     detected_pitch = detect_pitch(y, sr)
+#     print(f"Detected pitch: {detected_pitch:.2f} Hz")
     
-    print("Classifying beep...")
-    beep_class = classify_beep(detected_pitch, beep_frequencies)
-    print(f"Beep classified as: {beep_class}")
+#     print("Classifying beep...")
+#     beep_class = classify_beep(detected_pitch, beep_frequencies)
+#     print(f"Beep classified as: {beep_class}")
 
-# Example usage
-filePathLowAlarm = r"IVAlarm_Capstone\alarm_sounds\low_priority_alarm_cleaned.mp3"
-filePathHighAlarm = r"IVAlarm_Capstone\alarm_sounds\high_priority_alarm_cleaned.mp3"
-if not os.path.exists(filePathLowAlarm):
-    print("File not found:", filePathLowAlarm)
-else:
-    print("File found:", filePathLowAlarm)
+# # Example usage
+# filePathLowAlarm = r"IVAlarm_Capstone\alarm_sounds\low_priority_alarm_cleaned.mp3"
+# filePathHighAlarm = r"IVAlarm_Capstone\alarm_sounds\high_priority_alarm_cleaned.mp3"
 
-if not os.path.exists(filePathHighAlarm):
-    print("File not found:", filePathHighAlarm)
-else:
-    print("File found:", filePathHighAlarm)
+# if not os.path.exists(filePathLowAlarm):
+#     print("File not found:", filePathLowAlarm)
+# else:
+#     print("File found:", filePathLowAlarm)
+#     main(filePathLowAlarm)
 
-main(filePathLowAlarm)
-main(filePathHighAlarm)
-
+# if not os.path.exists(filePathHighAlarm):
+#     print("File not found:", filePathHighAlarm)
+# else:
+#     print("File found:", filePathHighAlarm)
+#     main(filePathHighAlarm)
