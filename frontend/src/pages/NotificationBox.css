@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+.notification-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #ffffff, #f1f3f5); 
+  border: 2px solid #9a9a9a;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notification-box.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Notification Text */
+.notification-box .text {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+/* Priority-based border colors */
+.low-priority .notification-box {
+  border-left: 6px solid #4CAF50;
+}
+
+.medium-priority .notification-box {
+  border-left: 6px solid #FF9800;
+}
+
+.high-priority .notification-box {
+  border-left: 6px solid #F44336;
+}
+
+/* Room Number */
+.notification-box .room-number {
+  font-size: 14px;
+  font-weight: 400;
+  color: #555;
+  margin-left: 10px;
+}
+
+/* Resolve Button */
+.resolve-button {
+  border: none;
+  background: #2C3E50;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-weight: 600;
+}
+
+.resolve-button:hover {
+  background: #1A252F;
+}
