@@ -149,7 +149,10 @@
 // ----------------------------------------------------------------------------------------------------------------------------
 
 import React, { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 import "./HomePage.css";
+
+const socket = io("http://localhost:5000");
 
 function NotificationColumn({ title, notifications, onResolve }) {
   return (
@@ -201,25 +204,29 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    const notificationInterval = setInterval(() => {
-      const priorities = ["Low", "Medium", "High"];
-      const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
-      const randomMessage = `Patient Name: John Doe`;
+    socket.on("beep_detected", (data) => {
+      console.log("Beep detected:", data);
 
       const notification = {
         id: notificationId,
-        message: randomMessage,
-        roomNumber: "XXX", // Make sure to add actual room number here
+        message: `Detected ${data.type} at ${data.pitch.toFixed(2)} Hz`,
+        roomNumber: "XXX", // Update this if needed
       };
 
-      if (randomPriority === "Low") setLowPriorityNotifications(prev => [...prev, notification]);
-      else if (randomPriority === "Medium") setMediumPriorityNotifications(prev => [...prev, notification]);
-      else setHighPriorityNotifications(prev => [...prev, notification]);
+      if (data.type === "LOW BEEP") {
+        setLowPriorityNotifications(prev => [...prev, notification]);
+      } else if (data.type === "MEDIUM BEEP" || data.type === "UNKNOWN BEEP") {
+        setMediumPriorityNotifications(prev => [...prev, notification]);
+      } else if (data.type === "HIGH BEEP") {
+        setHighPriorityNotifications(prev => [...prev, notification]);
+      }
 
       setNotificationId(prevId => prevId + 1);
-    }, 3000);
+    });
 
-    return () => clearInterval(notificationInterval);
+    return () => {
+      socket.off("beep_detected"); // Cleanup WebSocket listener when component unmounts
+    };
   }, [notificationId]);
 
   const handleResolve = (id, priority) => {
