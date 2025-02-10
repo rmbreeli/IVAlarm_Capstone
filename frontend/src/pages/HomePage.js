@@ -182,6 +182,7 @@ function HomePage() {
   const [mediumPriorityNotifications, setMediumPriorityNotifications] = useState([]);
   const [highPriorityNotifications, setHighPriorityNotifications] = useState([]);
   const [notificationId, setNotificationId] = useState(1);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/get-alarms")
@@ -222,6 +223,17 @@ function HomePage() {
     return () => clearInterval(notificationInterval);
   }, [notificationId]);
 
+  // Handle logout
+  const handleLogout = () => {
+    sessionStorage.removeItem("username");
+    window.location.href = "/"; 
+  };
+
+  // Handle the "Logout" button click, show confirmation modal
+  const onLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
   const handleResolve = (id, priority) => {
     if (priority === "Low") setLowPriorityNotifications(prev => prev.filter(n => n.id !== id));
     else if (priority === "Medium") setMediumPriorityNotifications(prev => prev.filter(n => n.id !== id));
@@ -235,7 +247,10 @@ function HomePage() {
     <div className="home-page">
       <div className="header-box">
         <h1>IV Alarm System Organizer</h1>
+        {/* Add logout button */}
+        <button className="logout-button" onClick={onLogoutClick}>Logout</button>
       </div>
+      
 
       <div className="info-box">
         <div className="left">
@@ -266,8 +281,22 @@ function HomePage() {
           onResolve={handleResolve}
         />
       </div>
+
+      {/* Popup text */}
+      {showLogoutModal && (
+        <div className="popup">
+          <div className="popup-content">
+            <h3>Are you sure you want to logout?</h3>
+            <div className="popup-buttons">
+              <button onClick={handleLogout}>Yes</button>
+              <button onClick={() => setShowLogoutModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
+
 }
 
 export default HomePage;
