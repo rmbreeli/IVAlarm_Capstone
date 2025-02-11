@@ -234,6 +234,33 @@ function HomePage() {
     setShowLogoutModal(true);
   };
 
+  function handleView() {
+    return 1;
+  }
+
+  function handleDownload() {
+    // Get the current date in the format YYYY-MM-DD
+    const currentDate = new Date().toISOString().split('T')[0];
+  
+    // Create the filename
+    const filename = `${currentDate}'s Report.txt`;
+  
+    // Create a Blob with an empty string (representing an empty file)
+    const blob = new Blob([""], { type: "text/plain" });
+  
+    // Create an anchor element for downloading the file
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename; // Set the download filename
+    
+    // Programmatically click the link to trigger the download
+    link.click();
+  
+    // Clean up the object URL
+    URL.revokeObjectURL(link.href);
+  }
+  
+
   const handleResolve = (id, priority) => {
     if (priority === "Low") setLowPriorityNotifications(prev => prev.filter(n => n.id !== id));
     else if (priority === "Medium") setMediumPriorityNotifications(prev => prev.filter(n => n.id !== id));
@@ -284,15 +311,41 @@ function HomePage() {
 
       {/* Popup text */}
       {showLogoutModal && (
-        <div className="popup">
-          <div className="popup-content">
-            <h3>Are you sure you want to logout?</h3>
-            <div className="popup-buttons">
-              <button onClick={handleLogout}>Yes</button>
-              <button onClick={() => setShowLogoutModal(false)}>Cancel</button>
+        <div className="overlay">
+          <div className="popup">
+            <div className="popup-content">
+              <h3>Are you sure you want to logout?</h3>
+
+              {/* New input section */}
+              <div className="email-input-container">
+                <label htmlFor="emailReport">Email days report:</label>
+                <input
+                  id="emailReport"
+                  type="text"
+                  placeholder="email"
+                  // You can handle the input value and onChange here if needed
+                />
+              </div>
+
+              {/* Download days report section */}
+              <div className="download-report-container">
+                <label htmlFor="downloadReport">Download days report:</label>
+                <button onClick={handleDownload}>Download</button>
+              </div>
+
+              {/* View days report section */}
+              <div className="view-report-container">
+                <label htmlFor="viewReport">View days report:</label>
+                <button onClick={handleView}>View</button>
+              </div>
+
+              <div className="popup-buttons">
+                <button onClick={handleLogout}>Yes</button>
+                <button onClick={() => setShowLogoutModal(false)}>Cancel</button>
+              </div>
             </div>
           </div>
-        </div>
+        </div>  
       )}
     </div>
   );

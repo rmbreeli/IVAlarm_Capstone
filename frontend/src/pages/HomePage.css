@@ -1,5 +1,71 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* Dark gray with some transparency */
+  z-index: 1000; /* Ensure it's on top of the content */
+}
+
+.email-input-container, .download-report-container, .view-report-container {
+  margin-bottom: 20px; /* Adds space below the input box */
+  display: flex; /* Use flexbox to align label and input horizontally */
+  gap: 15px; /* Adds some space between the label and input */
+
+
+}
+
+.email-input-container label, .download-report-container label, .view-report-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 18px;
+  display: flex; /* Use flexbox to align label and input horizontally */
+  align-items: center; /* Vertically align items in the center */
+  gap: 15px; /* Adds some space between the label and input */
+}
+
+.email-input-container input {
+  width: 45%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  display: flex; /* Use flexbox to align label and input horizontally */
+}
+
+.download-report-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #171a17; /* Green color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.download-report-container button:hover {
+  background-color: #868383; /* Slightly darker green when hovered */
+}
+
+.view-report-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #171a17; /* Green color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-report-container button:hover {
+  background-color: #868383; /* Slightly darker green when hovered */
+}
+
 .home-page {
   display: flex;
   flex-direction: column;
@@ -140,7 +206,7 @@ h2 {
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
-  z-index: 1000;
+  z-index: 1001;
   width: 30%; 
   max-width: 900px;
   height: 40%;
