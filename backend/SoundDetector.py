@@ -128,7 +128,7 @@ beep_frequencies = {
 }
 
 # Noise gate settings
-NOISE_THRESHOLD_DB = -9  # Set threshold for detecting beeps
+NOISE_THRESHOLD_DB = -8  # Set threshold for detecting beeps
 
 # Audio stream setup
 FORMAT = pyaudio.paInt16
