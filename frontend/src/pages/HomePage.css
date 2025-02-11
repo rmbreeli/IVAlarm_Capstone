@@ -14,8 +14,7 @@
   margin-bottom: 20px; /* Adds space below the input box */
   display: flex; /* Use flexbox to align label and input horizontally */
   gap: 15px; /* Adds some space between the label and input */
-
-
+  align-items: center;
 }
 
 .email-input-container label, .download-report-container label, .view-report-container label {
@@ -49,6 +48,20 @@
 }
 
 .download-report-container button:hover {
+  background-color: #868383; /* Slightly darker green when hovered */
+}
+
+.email-input-container button {
+  padding: 10px 10px;
+  font-size: 16px;
+  background-color: #171a17; /* Green color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.email-input-container button:hover {
   background-color: #868383; /* Slightly darker green when hovered */
 }
 

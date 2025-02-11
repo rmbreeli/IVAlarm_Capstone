@@ -234,6 +234,10 @@ function HomePage() {
     setShowLogoutModal(true);
   };
 
+  function handleEmail() {
+    return 1;
+  }
+  
   function handleView() {
     return 1;
   }
@@ -318,13 +322,14 @@ function HomePage() {
 
               {/* New input section */}
               <div className="email-input-container">
-                <label htmlFor="emailReport">Email days report:</label>
+                <label htmlFor="emailReport">Email report:</label>
                 <input
                   id="emailReport"
                   type="text"
                   placeholder="email"
                   // You can handle the input value and onChange here if needed
                 />
+                <button onClick={handleEmail}>Send</button>
               </div>
 
               {/* Download days report section */}
