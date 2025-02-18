@@ -1,0 +1,94 @@
+import sounddevice as sd
+import numpy as np
+import scipy.io.wavfile as wav
+import os
+import time
+from flask import Flask
+from flask_socketio import SocketIO
+
+
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Constants
+DURATION = 6  # Recording duration in seconds
+SAMPLE_RATE = 44100  # Standard audio sample rate
+THRESHOLD_DB = 0  # Noise gate threshold (in dB)
+TOLERANCE = 50  # Frequency tolerance for classification
+FILENAME = "temp_recording.wav"
+
+# Beep Frequency Mapping
+BEEP_FREQUENCIES = {
+    "LOW BEEP": 2000,
+    "MEDIUM BEEP": 2100,
+    "HIGH BEEP": 2200
+}
+
+def record_audio():
+    """Records audio from the microphone and saves it as a WAV file."""
+    print("🎤 Recording...")
+    audio_data = sd.rec(int(DURATION * SAMPLE_RATE), samplerate=SAMPLE_RATE, channels=1, dtype=np.float32)
+    sd.wait()  # Wait until recording is finished
+    wav.write(FILENAME, SAMPLE_RATE, audio_data)
+    print("✅ Recording saved.")
+
+def analyze_audio():
+    """Extracts the highest pitch from the recorded audio while filtering background noise."""
+    sample_rate, data = wav.read(FILENAME)
+
+    # Convert stereo to mono if needed
+    if len(data.shape) > 1:
+        data = data[:, 0]
+
+    # Apply FFT to get frequency components
+    fft_spectrum = np.fft.rfft(data)
+    frequencies = np.fft.rfftfreq(len(data), d=1/sample_rate)
+    
+    # Convert amplitude to decibels and apply a noise gate
+    magnitude = np.abs(fft_spectrum)
+    magnitude_db = 20 * np.log10(magnitude + 1e-10)  # Avoid log(0) issues
+    magnitude[magnitude_db < THRESHOLD_DB] = 0  # Remove background noise
+
+    # Find the highest frequency with significant energy
+    max_index = np.argmax(magnitude)
+    highest_pitch = frequencies[max_index]
+
+    # Determine beep type
+    beep_type = "Unknown"
+    for label, freq in BEEP_FREQUENCIES.items():
+        if abs(highest_pitch - freq) <= TOLERANCE:
+            beep_type = label
+            break
+
+    # Calculate volume (normalized amplitude)
+    volume = np.max(np.abs(data))
+
+    print(f"🎵 Highest Pitch Detected: {highest_pitch:.2f} Hz")
+
+    # Emit data to frontend
+    socketio.emit("beep_detected", {
+        "pitch": float(highest_pitch),
+        "type": beep_type,
+        "volume": float(volume)
+    })
+
+def cleanup():
+    """Deletes the temporary audio file."""
+    if os.path.exists(FILENAME):
+        os.remove(FILENAME)
+        print("🗑️ Deleted old recording.")
+
+def run_detection():
+    """Continuously records, analyzes, and cleans up audio."""
+    while True:
+        record_audio()
+        analyze_audio()
+        cleanup()
+        time.sleep(1)  # Small delay before the next recording
+
+
+# Start the Flask server
+if __name__ == "__main__":
+    print("🚀 Starting Flask backend...")
+    socketio.start_background_task(run_detection)
+    socketio.run(app, debug=True, port=5000)

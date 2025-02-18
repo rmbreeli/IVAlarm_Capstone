@@ -149,9 +149,11 @@
 // ----------------------------------------------------------------------------------------------------------------------------
 
 import React, { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 import "./HomePage.css";
 import NotificationBox from "./NotificationBox";
 
+const socket = io("http://localhost:5000");
 
 function NotificationColumn({ title, notifications, onResolve }) {
   return (
@@ -185,43 +187,68 @@ function HomePage() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/get-alarms")
-      .then(response => response.json())
-      .then(data => {
-        console.log("Received Data from Backend:", data); // Clean up when moving to production
-      })
-      .catch(error => console.error("Error fetching data:", error));
-
     const storedUsername = sessionStorage.getItem("username");
     if (storedUsername) setUsername(storedUsername);
-  }, []);
+
+    socket.on("beep_detected", (data) => {
+      console.log("Received beep event:", data);
+    
+      const priorityMap = {
+        "LOW BEEP": setLowPriorityNotifications,
+        "MEDIUM BEEP": setMediumPriorityNotifications,
+        "HIGH BEEP": setHighPriorityNotifications,
+      };
+    
+      const updateNotifications = priorityMap[data.type];
+      
+      if (!updateNotifications) {
+        console.log("Unknown beep detected, ignoring...");
+        return;
+      }
+    
+      updateNotifications(prev => [
+        ...prev, 
+        { 
+          id: notificationId, 
+          message: `Beep detected: ${data.type} (${data.pitch.toFixed(2)} Hz)`, 
+          roomNumber: "XXX" 
+        }
+      ]);
+    
+      setNotificationId(prevId => prevId + 1);
+    });
+
+    return () => {
+      socket.off("beep_detected");
+    };
+  }, [notificationId]);
 
   useEffect(() => {
     const intervalId = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(intervalId);
   }, []);
 
-  useEffect(() => {
-    const notificationInterval = setInterval(() => {
-      const priorities = ["Low", "Medium", "High"];
-      const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
-      const randomMessage = `Patient Name: John Doe`;
+  // useEffect(() => {
+  //   const notificationInterval = setInterval(() => {
+  //     const priorities = ["Low", "Medium", "High"];
+  //     const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
+  //     const randomMessage = `Patient Name: John Doe`;
 
-      const notification = {
-        id: notificationId,
-        message: randomMessage,
-        roomNumber: "XXX", // Make sure to add actual room number here
-      };
+  //     const notification = {
+  //       id: notificationId,
+  //       message: randomMessage,
+  //       roomNumber: "XXX", // Make sure to add actual room number here
+  //     };
 
-      if (randomPriority === "Low") setLowPriorityNotifications(prev => [...prev, notification]);
-      else if (randomPriority === "Medium") setMediumPriorityNotifications(prev => [...prev, notification]);
-      else setHighPriorityNotifications(prev => [...prev, notification]);
+  //     if (randomPriority === "Low") setLowPriorityNotifications(prev => [...prev, notification]);
+  //     else if (randomPriority === "Medium") setMediumPriorityNotifications(prev => [...prev, notification]);
+  //     else setHighPriorityNotifications(prev => [...prev, notification]);
 
-      setNotificationId(prevId => prevId + 1);
-    }, 3000);
+  //     setNotificationId(prevId => prevId + 1);
+  //   }, 3000);
 
-    return () => clearInterval(notificationInterval);
-  }, [notificationId]);
+  //   return () => clearInterval(notificationInterval);
+  // }, [notificationId]);
 
   // Handle logout
   const handleLogout = () => {
