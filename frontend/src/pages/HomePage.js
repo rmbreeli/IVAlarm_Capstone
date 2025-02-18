@@ -182,6 +182,7 @@ function HomePage() {
   const [mediumPriorityNotifications, setMediumPriorityNotifications] = useState([]);
   const [highPriorityNotifications, setHighPriorityNotifications] = useState([]);
   const [notificationId, setNotificationId] = useState(1);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/get-alarms")
@@ -222,6 +223,48 @@ function HomePage() {
     return () => clearInterval(notificationInterval);
   }, [notificationId]);
 
+  // Handle logout
+  const handleLogout = () => {
+    sessionStorage.removeItem("username");
+    window.location.href = "/"; 
+  };
+
+  // Handle the "Logout" button click, show confirmation modal
+  const onLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  function handleEmail() {
+    return 1;
+  }
+  
+  function handleView() {
+    return 1;
+  }
+
+  function handleDownload() {
+    // Get the current date in the format YYYY-MM-DD
+    const currentDate = new Date().toISOString().split('T')[0];
+  
+    // Create the filename
+    const filename = `${currentDate}'s Report.txt`;
+  
+    // Create a Blob with an empty string (representing an empty file)
+    const blob = new Blob([""], { type: "text/plain" });
+  
+    // Create an anchor element for downloading the file
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename; // Set the download filename
+    
+    // Programmatically click the link to trigger the download
+    link.click();
+  
+    // Clean up the object URL
+    URL.revokeObjectURL(link.href);
+  }
+  
+
   const handleResolve = (id, priority) => {
     if (priority === "Low") setLowPriorityNotifications(prev => prev.filter(n => n.id !== id));
     else if (priority === "Medium") setMediumPriorityNotifications(prev => prev.filter(n => n.id !== id));
@@ -235,7 +278,10 @@ function HomePage() {
     <div className="home-page">
       <div className="header-box">
         <h1>IV Alarm System Organizer</h1>
+        {/* Add logout button */}
+        <button className="logout-button" onClick={onLogoutClick}>Logout</button>
       </div>
+      
 
       <div className="info-box">
         <div className="left">
@@ -266,8 +312,49 @@ function HomePage() {
           onResolve={handleResolve}
         />
       </div>
+
+      {/* Popup text */}
+      {showLogoutModal && (
+        <div className="overlay">
+          <div className="popup">
+            <div className="popup-content">
+              <h3>Are you sure you want to logout?</h3>
+
+              {/* New input section */}
+              <div className="email-input-container">
+                <label htmlFor="emailReport">Email report:</label>
+                <input
+                  id="emailReport"
+                  type="text"
+                  placeholder="email"
+                  // You can handle the input value and onChange here if needed
+                />
+                <button onClick={handleEmail}>Send</button>
+              </div>
+
+              {/* Download days report section */}
+              <div className="download-report-container">
+                <label htmlFor="downloadReport">Download days report:</label>
+                <button onClick={handleDownload}>Download</button>
+              </div>
+
+              {/* View days report section */}
+              <div className="view-report-container">
+                <label htmlFor="viewReport">View days report:</label>
+                <button onClick={handleView}>View</button>
+              </div>
+
+              <div className="popup-buttons">
+                <button onClick={handleLogout}>Yes</button>
+                <button onClick={() => setShowLogoutModal(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>  
+      )}
     </div>
   );
+
 }
 
 export default HomePage;
