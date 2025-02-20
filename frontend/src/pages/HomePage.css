@@ -1,84 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8); /* Dark gray with some transparency */
-  z-index: 1000; /* Ensure it's on top of the content */
-}
-
-.email-input-container, .download-report-container, .view-report-container {
-  margin-bottom: 20px; /* Adds space below the input box */
-  display: flex; /* Use flexbox to align label and input horizontally */
-  gap: 15px; /* Adds some space between the label and input */
-  align-items: center;
-}
-
-.email-input-container label, .download-report-container label, .view-report-container label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-size: 18px;
-  display: flex; /* Use flexbox to align label and input horizontally */
-  align-items: center; /* Vertically align items in the center */
-  gap: 15px; /* Adds some space between the label and input */
-}
-
-.email-input-container input {
-  width: 45%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 200px;
-  display: flex; /* Use flexbox to align label and input horizontally */
-}
-
-.download-report-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #171a17; /* Green color */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.download-report-container button:hover {
-  background-color: #868383; /* Slightly darker green when hovered */
-}
-
-.email-input-container button {
-  padding: 10px 10px;
-  font-size: 16px;
-  background-color: #171a17; /* Green color */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.email-input-container button:hover {
-  background-color: #868383; /* Slightly darker green when hovered */
-}
-
-.view-report-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #171a17; /* Green color */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.view-report-container button:hover {
-  background-color: #868383; /* Slightly darker green when hovered */
-}
-
+/* General Styles */
 .home-page {
   display: flex;
   flex-direction: column;
@@ -110,18 +32,10 @@
   margin: 10px;
 }
 
-/* Columns */
-.priority-columns, .priority-container {
+/* Priority Columns */
+.priority-container {
   display: flex;
   justify-content: space-between;
-  flex-grow: 1;
-}
-
-.priority-columns {
-  padding: 20px;
-}
-
-.priority-container {
   gap: 20px;
   padding: 10px;
   height: 70vh;
@@ -131,11 +45,11 @@
 .priority-section {
   display: flex;
   flex-direction: column;
-  width: 30%; 
+  width: 30%;
 }
 
 .title-box {
-  background-color: #ddd; 
+  background-color: #ddd;
   padding: 10px;
   text-align: center;
   font-weight: bold;
@@ -143,7 +57,6 @@
   margin-bottom: 10px;
 }
 
-/* Title Box Colors */
 .low-title { background-color: #A1E3A1; }
 .medium-title { background-color: #FFD56B; }
 .high-title { background-color: #FF7F7F; }
@@ -152,44 +65,17 @@
   flex: 1;
   padding: 20px;
   border-radius: 12px;
-  margin: 10 10 10 10px;
   height: 70vh;
   overflow-y: auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(10px);
 }
 
-/* Priority Colors */
 .low-priority { background: #A1E3A1; }
 .medium-priority { background: #FFD56B; }
 .high-priority { background: #FF7F7F; }
 
-h2 {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.column h2 {
-  position: sticky;
-  top: 0;
-  padding: 12px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-/* Notifications Section */
-.notifications-container {
-  display: flex;
-  flex-direction: column;
-  padding: 15px 20px;
-  gap: 10px;
-}
-
+/* Logout Button */
 .logout-button {
   background-color: #2C3E50;
   color: white;
@@ -210,70 +96,149 @@ h2 {
   background-color: #1A252F;
 }
 
-.popup {
+
+/* Popup Styles */
+.overlay {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #ffffff; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup {
+  background: #ffffff;
   padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
-  z-index: 1001;
-  width: 30%; 
-  max-width: 900px;
-  height: 40%;
-  max-height: 700px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  max-width: 90%;
   text-align: center;
+  position: relative;
+  border: 2px solid #2C3E50;
+}
+
+.popup-content {
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center; 
-  border: 3px solid #2C3E50; 
-  background: linear-gradient(to bottom, #f8f9fa, #e1e7f0); 
+  gap: 20px;
 }
 
-.popup {
-  box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.1), 0 4px 20px rgba(0, 0, 0, 0.3);
+/* Email Row (Input and Send Button) */
+.email-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Content Styling */
-.popup-content h3 {
-  margin: 0 0 30px;
-  font-size: 28px;
-  font-weight: bold;
-  color: #2C3E50; 
+.email-row label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C3E50;
 }
 
-/* Buttons Area */
+.email-row input {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.email-row input:focus {
+  border-color: #2C3E50;
+}
+
+.email-row button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #2C3E50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.email-row button:hover {
+  background-color: #1A252F;
+}
+
+/* Button Rows with Labels */
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.button-row label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C3E50;
+  flex: 1;
+  text-align: left;
+}
+
+.button-row button {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 14px;
+  background-color: #2C3E50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-row button:hover {
+  background-color: #1A252F;
+}
+
+/* Logout and Cancel Buttons */
 .popup-buttons {
   display: flex;
-  justify-content: center; 
-  gap: 20px; 
+  justify-content: center;
+  gap: 15px;
   margin-top: 20px;
 }
 
 .popup-buttons button {
-  padding: 20px 40px;
-  font-size: 22px;
-  cursor: pointer;
-  border: 2px solid #2C3E50; 
-  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
   background-color: white;
   color: #2C3E50;
-  transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+  border: 2px solid #2C3E50;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .popup-buttons button:hover {
-  background-color: #f0f4f8; 
-  border-color: #1A252F; 
+  background-color: #2C3E50;
+  color: white;
 }
 
-.popup-buttons button:active {
-  transform: scale(0.98);
-  border-color: #1A252F; 
+/* Close Button */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #2C3E50;
+  transition: color 0.3s ease;
 }
 
-
-/* Import notification styles */
-@import url('./NotificationBox.css');
+.popup-close:hover {
+  color: #1A252F;
+}
