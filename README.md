@@ -13,9 +13,10 @@ Required Installations:
 
 SoundDevice, Librosa, Numpy, Soundfile, Scipy, Pydub, Flask
     pip install sounddevice librosa numpy soundfile scipy pydub flask
+    pip install flask-socketio
 
 Instructions:
-    Run LiveDetectionWithWav.py on a single terminal
-    Run frontend using "npm start"
+    Run/python LiveDetectionWithWav.py on a single terminal in backend folder
+    Run frontend using "npm start" in frontend folder
     Login
     Play alarms!
