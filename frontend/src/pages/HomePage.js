@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import "./HomePage.css";
 import NotificationBox from "./NotificationBox";
+import { jsPDF } from "jspdf";
+
 
 const socket = io("http://localhost:5000");
 
@@ -56,13 +58,17 @@ function HomePage() {
         console.log("Unknown beep detected, ignoring...");
         return;
       }
+      
+      // Random number generator
+      const randomRoomNumber = Math.floor(Math.random() * 201) + 100
     
       updateNotifications(prev => [
         ...prev, 
         { 
           id: notificationId, 
           message: `Beep detected: ${data.type} (${data.pitch.toFixed(2)} Hz)`, 
-          roomNumber: "XXX" 
+          // Set the random room number
+          roomNumber: randomRoomNumber.toString(), 
         }
       ]);
     
@@ -100,17 +106,96 @@ function HomePage() {
     console.log("View report");
   };
 
+  // Download changed to PDF
   const handleDownloadReport = () => {
+    const doc = new jsPDF();
     const currentDate = new Date().toISOString().split('T')[0];
-    const filename = `${currentDate}'s Report.txt`;
-    const blob = new Blob([""], { type: "text/plain" });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    
+    // Title and Report Header
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Alarm Report`, 105, 20, { align: "center" });
+    
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 30, { align: "center" });
+    
+    // Page Number Handling
+    let pageNumber = 1;
+    const addPageNumber = () => {
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Page ${pageNumber}`, 200, 290, { align: "right" });
+      pageNumber++;
+    };
+  
+    // Function to Add Notifications Section
+    const addNotifications = (priorityTitle, notifications, startY, color) => {
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...color);
+      doc.text(`${priorityTitle} Priority:`, 10, startY);
+      
+      doc.setDrawColor(...color);
+      doc.line(10, startY + 2, 200, startY + 2); // Underline for Title
+  
+      let currentYPosition = startY + 10;
+  
+      if (notifications.length === 0) {
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        doc.text("No notifications.", 15, currentYPosition);
+        return currentYPosition + 10;
+      }
+  
+      notifications.forEach((n, index) => {
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        const message = `${index + 1}. Room: ${n.roomNumber} - ${n.message}`;
+        doc.text(message, 15, currentYPosition);
+        currentYPosition += 8;
+  
+        // Check for page overflow and handle page breaks
+        if (currentYPosition > 270) {
+          addPageNumber();
+          doc.addPage();
+          currentYPosition = 20;
+        }
+      });
+  
+      return currentYPosition + 10;
+    };
+  
+    // Start adding content
+    let currentYPosition = 40;
+  
+    // Add Notifications by Priority
+    currentYPosition = addNotifications("High", highPriorityNotifications, currentYPosition, [255, 0, 0]);
+    currentYPosition = addNotifications("Medium", mediumPriorityNotifications, currentYPosition, [255, 165, 0]);
+    currentYPosition = addNotifications("Low", lowPriorityNotifications, currentYPosition, [34, 139, 34]);
+  
+    // Summary Section with clear formatting
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.text("Summary:", 10, currentYPosition);
+    
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`High Priority: ${highPriorityNotifications.length}`, 15, currentYPosition + 10);
+    doc.text(`Medium Priority: ${mediumPriorityNotifications.length}`, 15, currentYPosition + 20);
+    doc.text(`Low Priority: ${lowPriorityNotifications.length}`, 15, currentYPosition + 30);
+  
+    // Add final page number
+    addPageNumber();
+  
+    // Save the PDF
+    doc.save(`${currentDate}'s_Report.pdf`);
   };
-
+  
+  
   const handleResolve = (id, priority) => {
     if (priority === "Low") setLowPriorityNotifications(prev => prev.filter(n => n.id !== id));
     else if (priority === "Medium") setMediumPriorityNotifications(prev => prev.filter(n => n.id !== id));
