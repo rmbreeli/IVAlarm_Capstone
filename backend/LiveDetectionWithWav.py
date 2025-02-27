@@ -6,7 +6,6 @@ import time
 from flask import Flask
 from flask_socketio import SocketIO
 
-
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -14,7 +13,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 DURATION = 6  # Recording duration in seconds
 SAMPLE_RATE = 44100  # Standard audio sample rate
 THRESHOLD_DB = 0  # Noise gate threshold (in dB)
-TOLERANCE = 50  # Frequency tolerance for classification
+TOLERANCE = 25  # Frequency tolerance for classification
 FILENAME = "temp_recording.wav"
 
 # Beep Frequency Mapping
@@ -23,6 +22,14 @@ BEEP_FREQUENCIES = {
     "MEDIUM BEEP": 2100,
     "HIGH BEEP": 2200
 }
+
+# Create a new report file with timestamp
+report_filename = f"beep_report_{time.strftime('%Y%m%d_%H%M%S')}.txt"
+
+def write_to_report(data):
+    """Writes beep data to the report file."""
+    with open(report_filename, "a") as file:
+        file.write(data + "\n")
 
 def record_audio():
     """Records audio from the microphone and saves it as a WAV file."""
@@ -65,6 +72,11 @@ def analyze_audio():
 
     print(f"🎵 Highest Pitch Detected: {highest_pitch:.2f} Hz")
 
+    if beep_type != "Unknown":
+        timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+        report_entry = f"[{timestamp}] Pitch: {highest_pitch:.2f} Hz, Type: {beep_type}, Volume: {volume:.2f}"
+        write_to_report(report_entry)
+
     # Emit data to frontend
     socketio.emit("beep_detected", {
         "pitch": float(highest_pitch),
@@ -92,3 +104,4 @@ if __name__ == "__main__":
     print("🚀 Starting Flask backend...")
     socketio.start_background_task(run_detection)
     socketio.run(app, debug=True, port=5000)
+
