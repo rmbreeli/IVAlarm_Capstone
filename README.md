@@ -7,7 +7,7 @@ Our system detects alarm sounds in real-time, categorizes them by pitch, and sen
 ## Technologies Used
 This project is built using a combination of different languages and technologies:
 - **Python**: Backend processing, alarm detection, and real-time audio analysis using libraries such as Librosa, SoundDevice, and Pydub.
-- **JavaScript**: Frontend logic, including dynamic upadtes, interactions, and communications with the backend via Socket.IO.
+- **JavaScript**: Frontend logic, including dynamic updates, interactions, and communications with the backend via Socket.IO.
 - **React**: Building the user interface for easy interaction and notification display.
 - **CSS**: Styling the frontend to ensure a clean and responsive design
 - **HTML**: Structing the frontend content.
@@ -18,7 +18,9 @@ Before running the project, ensure you have the following libraries and tools in
 ### Backend Dependencies (Python)
 To install the required pythons libraries for the backend:
 1. Navigate to the `backend` folder:
-   
+```
+cd backend
+```
 
 Languages Used:
 Python (backend)
