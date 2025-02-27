@@ -21,6 +21,7 @@ function NotificationColumn({ title, notifications, onResolve }) {
             message={notification.message}
             roomNumber={notification.roomNumber}
             priority={title}
+            time={notification.timestamp}
             onResolve={onResolve}
           />
         ))}
@@ -69,6 +70,7 @@ function HomePage() {
           message: `Beep detected: ${data.type} (${data.pitch.toFixed(2)} Hz)`, 
           // Set the random room number
           roomNumber: randomRoomNumber.toString(), 
+          timestamp: new Date().toLocaleTimeString()
         }
       ]);
     

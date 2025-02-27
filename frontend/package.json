@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "-": "^0.0.1",
     "cra-template": "1.2.0",
+    "download": "^8.0.0",
     "jspdf": "^3.0.0",
+    "pdf": "^0.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
