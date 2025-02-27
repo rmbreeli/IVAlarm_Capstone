@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import "./HomePage.css";
 import NotificationBox from "./NotificationBox";
+import { jsPDF } from "jspdf";
+
 
 const socket = io("http://localhost:5000");
 
@@ -56,13 +58,17 @@ function HomePage() {
         console.log("Unknown beep detected, ignoring...");
         return;
       }
+      
+      // Random number generator
+      const randomRoomNumber = Math.floor(Math.random() * 201) + 100
     
       updateNotifications(prev => [
         ...prev, 
         { 
           id: notificationId, 
           message: `Beep detected: ${data.type} (${data.pitch.toFixed(2)} Hz)`, 
-          roomNumber: "XXX" 
+          // Set the random room number
+          roomNumber: randomRoomNumber.toString(), 
         }
       ]);
     
@@ -100,16 +106,29 @@ function HomePage() {
     console.log("View report");
   };
 
-  const handleDownloadReport = () => {
+  // Download changed to PDF
+  function handleDownload() {
+    // Get the current date in the format YYYY-MM-DD
     const currentDate = new Date().toISOString().split('T')[0];
+  
+    // Create the filename
     const filename = `${currentDate}'s Report.txt`;
+  
+    // Create a Blob with an empty string (representing an empty file)
     const blob = new Blob([""], { type: "text/plain" });
+  
+    // Create an anchor element for downloading the file
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = filename;
+    link.download = filename; // Set the download filename
+    
+    // Programmatically click the link to trigger the download
     link.click();
+  
+    // Clean up the object URL
     URL.revokeObjectURL(link.href);
   };
+  
 
   const handleResolve = (id, priority) => {
     if (priority === "Low") setLowPriorityNotifications(prev => prev.filter(n => n.id !== id));
@@ -184,7 +203,7 @@ function HomePage() {
         </div>
         <div className="button-row">
           <label>Download days report:</label>
-          <button className="action-button" onClick={handleDownloadReport}>Download</button>
+          <button className="action-button" onClick={handleDownload}>Download</button>
         </div>
 
         {/* Logout and Cancel Buttons */}
