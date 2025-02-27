@@ -3,11 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "-": "^0.0.1",
     "cra-template": "1.2.0",
+    "download": "^8.0.0",
+    "jspdf": "^3.0.0",
+    "pdf": "^0.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "socket.io-client": "^4.8.1",
+    "web-vitals": "^4.2.4"
   },
   "scripts": {
     "start": "react-scripts start",
