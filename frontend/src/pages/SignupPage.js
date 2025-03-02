@@ -42,6 +42,7 @@ function SignupPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <p>password must be at least 6 characters, include one upper case, include 1 lowercase, include 1 number, and include 1 symbol.</p>
         <button onClick={handleSignUp} className="login-button">
           Sign Up
         </button>
