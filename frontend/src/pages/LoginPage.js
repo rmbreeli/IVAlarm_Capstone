@@ -23,6 +23,12 @@ function LoginPage() {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSignIn();
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-box">
@@ -34,6 +40,7 @@ function LoginPage() {
           className="login-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <input
           type="password"
@@ -41,6 +48,7 @@ function LoginPage() {
           className="login-input"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <button onClick={handleSignIn} className="login-button">
           Sign In
