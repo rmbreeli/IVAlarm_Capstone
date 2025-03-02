@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import "./HomePage.css";
 import NotificationBox from "./NotificationBox";
-import { jsPDF } from "jspdf";
-
+import { supabase } from "../supabaseClient";
+// import { jsPDF } from "jspdf";
 
 const socket = io("http://localhost:5000");
 
@@ -14,7 +14,7 @@ function NotificationColumn({ title, notifications, onResolve }) {
         <h2>{title} Priority</h2>
       </div>
       <div className={`column ${title.toLowerCase()}-priority`}>
-        {notifications.map(notification => (
+        {notifications.map((notification) => (
           <NotificationBox
             key={notification.id}
             id={notification.id}
@@ -32,7 +32,7 @@ function NotificationColumn({ title, notifications, onResolve }) {
 
 function HomePage() {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [username, setUsername] = useState("Random User");
+  const [displayName, setDisplayName] = useState("Guest");
   const [lowPriorityNotifications, setLowPriorityNotifications] = useState([]);
   const [mediumPriorityNotifications, setMediumPriorityNotifications] = useState([]);
   const [highPriorityNotifications, setHighPriorityNotifications] = useState([]);
@@ -41,40 +41,45 @@ function HomePage() {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    const storedUsername = sessionStorage.getItem("username");
-    if (storedUsername) setUsername(storedUsername);
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setDisplayName(user.email);
+      }
+    };
+    fetchUser();
 
     socket.on("beep_detected", (data) => {
       console.log("Received beep event:", data);
-    
+
       const priorityMap = {
         "LOW BEEP": setLowPriorityNotifications,
         "MEDIUM BEEP": setMediumPriorityNotifications,
         "HIGH BEEP": setHighPriorityNotifications,
       };
-    
+
       const updateNotifications = priorityMap[data.type];
-      
+
       if (!updateNotifications) {
         console.log("Unknown beep detected, ignoring...");
         return;
       }
-      
-      // Random number generator
-      const randomRoomNumber = Math.floor(Math.random() * 201) + 100
-    
-      updateNotifications(prev => [
-        ...prev, 
-        { 
-          id: notificationId, 
-          message: `Beep detected: ${data.type} (${data.pitch.toFixed(2)} Hz)`, 
-          // Set the random room number
-          roomNumber: randomRoomNumber.toString(), 
-          timestamp: new Date().toLocaleTimeString()
-        }
+
+      const randomRoomNumber = Math.floor(Math.random() * 201) + 100;
+
+      updateNotifications((prev) => [
+        ...prev,
+        {
+          id: notificationId,
+          message: `Beep detected: ${data.type} (${data.pitch.toFixed(2)} Hz)`,
+          roomNumber: randomRoomNumber.toString(),
+          timestamp: new Date().toLocaleTimeString(),
+        },
       ]);
-    
-      setNotificationId(prevId => prevId + 1);
+
+      setNotificationId((prevId) => prevId + 1);
     });
 
     return () => {
@@ -87,9 +92,9 @@ function HomePage() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("username");
-    window.location.href = "/"; 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
   };
 
   const onLogoutClick = () => {
@@ -108,34 +113,24 @@ function HomePage() {
     console.log("View report");
   };
 
-  // Download changed to PDF
   function handleDownload() {
-    // Get the current date in the format YYYY-MM-DD
-    const currentDate = new Date().toISOString().split('T')[0];
-  
-    // Create the filename
+    const currentDate = new Date().toISOString().split("T")[0];
     const filename = `${currentDate}'s Report.txt`;
-  
-    // Create a Blob with an empty string (representing an empty file)
     const blob = new Blob([""], { type: "text/plain" });
-  
-    // Create an anchor element for downloading the file
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = filename; // Set the download filename
-    
-    // Programmatically click the link to trigger the download
+    link.download = filename;
     link.click();
-  
-    // Clean up the object URL
     URL.revokeObjectURL(link.href);
-  };
-  
+  }
 
   const handleResolve = (id, priority) => {
-    if (priority === "Low") setLowPriorityNotifications(prev => prev.filter(n => n.id !== id));
-    else if (priority === "Medium") setMediumPriorityNotifications(prev => prev.filter(n => n.id !== id));
-    else if (priority === "High") setHighPriorityNotifications(prev => prev.filter(n => n.id !== id));
+    if (priority === "Low")
+      setLowPriorityNotifications((prev) => prev.filter((n) => n.id !== id));
+    else if (priority === "Medium")
+      setMediumPriorityNotifications((prev) => prev.filter((n) => n.id !== id));
+    else if (priority === "High")
+      setHighPriorityNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
   const timeString = currentTime.toLocaleTimeString();
@@ -145,7 +140,9 @@ function HomePage() {
     <div className="home-page">
       <div className="header-box">
         <h1>IV Alarm System Organizer</h1>
-        <button className="logout-button" onClick={onLogoutClick}>Logout</button>
+        <button className="logout-button" onClick={onLogoutClick}>
+          Logout
+        </button>
       </div>
 
       <div className="info-box">
@@ -156,7 +153,7 @@ function HomePage() {
           <span>{dateString}</span>
         </div>
         <div className="right">
-          <span>{username}</span>
+          <span>{displayName}</span>
         </div>
       </div>
 
@@ -178,45 +175,56 @@ function HomePage() {
         />
       </div>
 
-{showLogoutModal && (
-  <div className="overlay">
-    <div className="popup">
-      <button className="popup-close" onClick={() => setShowLogoutModal(false)}>
-        &times;
-      </button>
-      <div className="popup-content">
-        {/* Email Input and Send Button in the Same Row */}
-        <div className="email-row">
-          <label htmlFor="emailReport">Email report:</label>
-          <input
-            id="emailReport"
-            type="text"
-            placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button className="send-button" onClick={handleEmailReport}>Send</button>
-        </div>
+      {showLogoutModal && (
+        <div className="overlay">
+          <div className="popup">
+            <button
+              className="popup-close"
+              onClick={() => setShowLogoutModal(false)}
+            >
+              &times;
+            </button>
+            <div className="popup-content">
+              <div className="email-row">
+                <label htmlFor="emailReport">Email report:</label>
+                <input
+                  id="emailReport"
+                  type="text"
+                  placeholder="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <button className="send-button" onClick={handleEmailReport}>
+                  Send
+                </button>
+              </div>
 
-        {/* Button Rows with Labels */}
-        <div className="button-row">
-          <label>View days report:</label>
-          <button className="action-button" onClick={handleViewReport}>View</button>
-        </div>
-        <div className="button-row">
-          <label>Download days report:</label>
-          <button className="action-button" onClick={handleDownload}>Download</button>
-        </div>
+              <div className="button-row">
+                <label>View days report:</label>
+                <button className="action-button" onClick={handleViewReport}>
+                  View
+                </button>
+              </div>
+              <div className="button-row">
+                <label>Download days report:</label>
+                <button
+                  className="action-button"
+                  onClick={handleDownload}
+                >
+                  Download
+                </button>
+              </div>
 
-        {/* Logout and Cancel Buttons */}
-        <div className="popup-buttons">
-          <button onClick={handleLogout}>Logout</button>
-          <button onClick={() => setShowLogoutModal(false)}>Cancel</button>
+              <div className="popup-buttons">
+                <button onClick={handleLogout}>Logout</button>
+                <button onClick={() => setShowLogoutModal(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 }
