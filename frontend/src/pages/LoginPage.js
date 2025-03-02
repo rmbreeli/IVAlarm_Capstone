@@ -1,21 +1,31 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../supabaseClient"; 
 import "./LoginPage.css";
 
 function LoginPage() {
   const navigate = useNavigate();
 
-  // State to hold the values of the inputs
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState(""); 
   const [password, setPassword] = useState("");
 
-  // Function to handle sign-in
-  const handleSignIn = () => {
-    if (username && password) {
-      sessionStorage.setItem("username", username);
-      navigate("/home"); // Redirect to the homepage
-    } else {
-      alert("Please fill in both the username and password.");
+  const handleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      sessionStorage.setItem("email", email); 
+      navigate("/home");
+    } catch (error) {
+      alert(error.error_description || error.message);
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSignIn();
     }
   };
 
@@ -25,11 +35,12 @@ function LoginPage() {
         <h1>IV Alarm System Login</h1>
         <p>Your Reliable Partner in Care Organization</p>
         <input
-          type="text"
-          placeholder="Username"
+          type="email" 
+          placeholder="Email" 
           className="login-input"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <input
           type="password"
@@ -37,10 +48,14 @@ function LoginPage() {
           className="login-input"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <button onClick={handleSignIn} className="login-button">
           Sign In
         </button>
+        <Link to="/signup">
+          <button className="login-button signup-button">Sign Up</button>
+        </Link>
       </div>
     </div>
   );

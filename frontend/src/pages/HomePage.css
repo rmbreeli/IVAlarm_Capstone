@@ -32,13 +32,40 @@
   margin: 10px;
 }
 
+.info-box {
+  display: flex;
+  justify-content: space-between; /* Use space-between */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+}
+
+.info-box .left,
+.info-box .center,
+.info-box .right {
+  flex: 1; /* Allow equal distribution of space */
+  text-align: center; /* Center text within each section */
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis (...) for long text */
+}
+
+.info-box .left {
+  text-align: left; /* Align time to the left */
+}
+
+.info-box .right {
+  text-align: right; /* Align email to the right */
+}
+
 /* Priority Columns */
 .priority-container {
   display: flex;
   justify-content: space-between;
   gap: 20px;
   padding: 10px;
-  height: 70vh;
+  height: 78vh;
   overflow-y: auto;
 }
 

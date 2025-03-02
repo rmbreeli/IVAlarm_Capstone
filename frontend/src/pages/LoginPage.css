@@ -70,10 +70,19 @@ p {
 }
 
 .login-button:hover {
-  background-color: #1A252F;
+  background-color: #0056b3;
 }
 
 /* Hover Animation */
 .login-button:active {
   transform: scale(0.98);
+}
+
+.signup-button {
+  background-color: #7b848a; /* Example: Blue background */
+  margin-top: 10px; /* Add some spacing */
+}
+
+.signup-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
 }
