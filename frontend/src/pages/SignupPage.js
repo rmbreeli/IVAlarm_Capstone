@@ -23,6 +23,12 @@ function SignupPage() {
     }
   };
 
+  const handleKeyDown2 = (event) => {
+    if (event.key === "Enter") {
+      handleSignUp();
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-box">
@@ -34,6 +40,7 @@ function SignupPage() {
           className="login-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown2}
         />
         <input
           type="password"
@@ -41,6 +48,7 @@ function SignupPage() {
           className="login-input"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown2}
         />
         <p>password must be at least 6 characters, include one upper case, include 1 lowercase, include 1 number, and include 1 symbol.</p>
         <button onClick={handleSignUp} className="login-button">
