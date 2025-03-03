@@ -17,11 +17,26 @@ Ensure you have the following installed before setting up the project:
 - Node.js (LTS version recommended)
 - Python (3.x version recommended)
 
-## Required Installations
-Make sure you are in the `IVAlarm_Capstone` directory before installing the following libraries and tools:
+## Downloading the Project
+To get started with the IV Alarm System, you'll need to download the project repository. You can do this by cloning the GitHub repository or downloading the ZIP file.
+
+### **Clone the Repository:**
+If you have Git installed, you can clone the repository using the following command:
+```
+git clone https://github.com/rmbreeli/IVAlarm_Capstone.git
+```
+
+### Download as ZIP:
+
+Alternatively, you can download the project as a ZIP file by visiting the GitHub repository and clicking on the "Download ZIP" button. Once downloaded, unzip the file to your desired location.
+
+After downloading the project, open two terminal windows and navigate to the project directory in both:
 ```
 cd IVAlarm_Capstone
 ```
+
+## Required Installations
+Make sure to install the following libraries and tools before running the project:
 
 ### Backend Dependencies (Python)
 To install the required pythons libraries for the backend:
