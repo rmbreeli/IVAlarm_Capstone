@@ -18,17 +18,25 @@ function SignupPage() {
 
   const handleSignUp = async () => {
     try {
+      // Check password requirements before calling supabase
+      if (!validations.length || !validations.uppercase || !validations.lowercase || !validations.number || !validations.symbol) {
+        throw new Error("Password doesn’t meet requirements");
+      }
+  
       const { error } = await supabase.auth.signUp({
         email,
         password,
       });
+  
       if (error) throw error;
+  
       alert("Signup successful! Check your email to confirm.");
       navigate("/");
     } catch (error) {
-      alert(error.error_description || error.message);
+      alert("Password doesn’t meet requirements");
     }
   };
+  
 
   const handleKeyDown2 = (event) => {
     if (event.key === "Enter") {

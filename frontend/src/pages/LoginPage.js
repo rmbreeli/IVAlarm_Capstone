@@ -23,22 +23,6 @@ function LoginPage() {
     }
   };
 
-  // Forgot password function
-  const handleForgotPassword = async () => {
-    if (!email) {
-      alert("Please enter your email first.");
-      return;
-    }
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "http://localhost:3000/reset-password",
-      });
-      if (error) throw error;
-      alert("Password reset email sent. Check your inbox.");
-    } catch (error) {
-      alert(error.error_description || error.message);
-    }
-  };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -73,9 +57,10 @@ function LoginPage() {
         <Link to="/signup">
           <button className="login-button signup-button">Sign Up</button>
         </Link>
-        <button onClick={handleForgotPassword} className="forgot-password">
+        <Link to="/forgot-password" className="forgot-password">
           Forgot Password?
-        </button>
+        </Link>
+
       </div>
     </div>
   );
