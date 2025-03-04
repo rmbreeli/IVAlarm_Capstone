@@ -86,3 +86,50 @@ p {
 .signup-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
 }
+
+.password-requirements {
+  text-align: left;
+  margin: 10px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  font-size: 14px;
+  list-style: none;
+}
+
+.password-requirements li {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.password-requirements .valid {
+  color: green;
+}
+
+.password-requirements .invalid {
+  color: red;
+}
+
+.forgot-password {
+  background: none;
+  border: none;
+  color: #6c757d; 
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: 10px;
+  transition: color 0.2s ease-in-out;
+}
+
+.forgot-password:hover {
+  color: #343a40; 
+  text-decoration: underline;
+}
+
+.forgot-password:focus {
+  outline: none;
+}
+
+

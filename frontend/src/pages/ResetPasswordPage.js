@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import "./LoginPage.css"; // Use the same styling
+import "./LoginPage.css";
 
-function SignupPage() {
+function ResetPasswordPage() {
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [validations, setValidations] = useState({
     length: false,
     uppercase: false,
@@ -16,29 +14,10 @@ function SignupPage() {
     symbol: false,
   });
 
-  const handleSignUp = async () => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      if (error) throw error;
-      alert("Signup successful! Check your email to confirm.");
-      navigate("/");
-    } catch (error) {
-      alert(error.error_description || error.message);
-    }
-  };
+  const isPasswordValid = Object.values(validations).every(Boolean); // Checks if all conditions are met
 
-  const handleKeyDown2 = (event) => {
-    if (event.key === "Enter") {
-      handleSignUp();
-    }
-  };
-
-  // Function to check password criteria
   const validatePassword = (pass) => {
-    setPassword(pass);
+    setNewPassword(pass);
     setValidations({
       length: pass.length >= 6,
       uppercase: /[A-Z]/.test(pass),
@@ -48,26 +27,35 @@ function SignupPage() {
     });
   };
 
+  const handleResetPassword = async () => {
+    if (!isPasswordValid) {
+      alert("Your password does not meet the requirements! Please try again.");
+      return;
+    }
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      if (error) throw error;
+      alert("Password updated successfully!");
+      navigate("/");
+    } catch (error) {
+      alert(error.error_description || error.message);
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-box">
-        <h1>IV Alarm System Signup</h1>
-        <p>Create your account</p>
-        <input
-          type="email"
-          placeholder="Email"
-          className="login-input"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={handleKeyDown2}
-        />
+        <h1>Reset Password</h1>
+        <p>Enter a new secure password.</p>
+
         <input
           type="password"
-          placeholder="Password"
+          placeholder="New Password"
           className="login-input"
-          value={password}
+          value={newPassword}
           onChange={(e) => validatePassword(e.target.value)}
-          onKeyDown={handleKeyDown2}
         />
 
         <ul className="password-requirements">
@@ -83,20 +71,17 @@ function SignupPage() {
           <li className={validations.number ? "valid" : "invalid"}>
             {validations.number ? "✅" : "❌"} One number
           </li>
-          <li className={validations.symbol ? "valid" : "❌ invalid"}>
-            {validations.symbol ? "✅" : "❌"} One symbol
+          <li className={validations.symbol ? "valid" : "invalid"}>
+            {validations.symbol ? "✅" : "❌"} One special character
           </li>
         </ul>
 
-        <button onClick={handleSignUp} className="login-button">
-          Sign Up
+        <button onClick={handleResetPassword} className="login-button">
+          Reset Password
         </button>
-        <Link to="/">
-          <button className="login-button signup-button">Back</button>
-        </Link>
       </div>
     </div>
   );
 }
 
-export default SignupPage;
+export default ResetPasswordPage;
