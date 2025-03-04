@@ -44,7 +44,7 @@ function ForgotPasswordPage() {
         </button>
 
         <button onClick={() => navigate("/")} className="login-button signup-button">
-          Back to Login
+          Back
         </button>
       </div>
     </div>
