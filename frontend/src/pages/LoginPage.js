@@ -23,6 +23,7 @@ function LoginPage() {
     }
   };
 
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       handleSignIn();
@@ -56,6 +57,10 @@ function LoginPage() {
         <Link to="/signup">
           <button className="login-button signup-button">Sign Up</button>
         </Link>
+        <Link to="/forgot-password" className="forgot-password">
+          Forgot Password?
+        </Link>
+
       </div>
     </div>
   );

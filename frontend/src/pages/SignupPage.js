@@ -8,25 +8,52 @@ function SignupPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [validations, setValidations] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    symbol: false,
+  });
 
   const handleSignUp = async () => {
     try {
+      // Check password requirements before calling supabase
+      if (!validations.length || !validations.uppercase || !validations.lowercase || !validations.number || !validations.symbol) {
+        throw new Error("Password doesn’t meet requirements");
+      }
+  
       const { error } = await supabase.auth.signUp({
         email,
         password,
       });
+  
       if (error) throw error;
+  
       alert("Signup successful! Check your email to confirm.");
       navigate("/");
     } catch (error) {
-      alert(error.error_description || error.message);
+      alert("Password doesn’t meet requirements");
     }
   };
+  
 
   const handleKeyDown2 = (event) => {
     if (event.key === "Enter") {
       handleSignUp();
     }
+  };
+
+  // Function to check password criteria
+  const validatePassword = (pass) => {
+    setPassword(pass);
+    setValidations({
+      length: pass.length >= 6,
+      uppercase: /[A-Z]/.test(pass),
+      lowercase: /[a-z]/.test(pass),
+      number: /\d/.test(pass),
+      symbol: /[!@#$%^&*(),.?":{}|<>]/.test(pass),
+    });
   };
 
   return (
@@ -47,10 +74,28 @@ function SignupPage() {
           placeholder="Password"
           className="login-input"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => validatePassword(e.target.value)}
           onKeyDown={handleKeyDown2}
         />
-        <p>password must be at least 6 characters, include one upper case, include 1 lowercase, include 1 number, and include 1 symbol.</p>
+
+        <ul className="password-requirements">
+          <li className={validations.length ? "valid" : "invalid"}>
+            {validations.length ? "✅" : "❌"} At least 6 characters
+          </li>
+          <li className={validations.uppercase ? "valid" : "invalid"}>
+            {validations.uppercase ? "✅" : "❌"} One uppercase letter
+          </li>
+          <li className={validations.lowercase ? "valid" : "invalid"}>
+            {validations.lowercase ? "✅" : "❌"} One lowercase letter
+          </li>
+          <li className={validations.number ? "valid" : "invalid"}>
+            {validations.number ? "✅" : "❌"} One number
+          </li>
+          <li className={validations.symbol ? "valid" : "❌ invalid"}>
+            {validations.symbol ? "✅" : "❌"} One symbol
+          </li>
+        </ul>
+
         <button onClick={handleSignUp} className="login-button">
           Sign Up
         </button>
