@@ -114,14 +114,27 @@ function HomePage() {
   };
 
   function handleDownload() {
-    const currentDate = new Date().toISOString().split("T")[0];
-    const filename = `${currentDate}'s Report.txt`;
-    const blob = new Blob([""], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    fetch("http://localhost:5000/get_report")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const currentDate = new Date().toISOString().split("T")[0];
+        const filename = `${currentDate}'s Report.txt`;
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+      })
+      .catch((error) => {
+        console.error("Error downloading the report:", error);
+      });
   }
 
   const handleResolve = (id, priority) => {
