@@ -4,10 +4,13 @@ import scipy.io.wavfile as wav
 import os
 import time
 from flask import Flask
+from flask import send_file
 from flask_socketio import SocketIO
+from flask_cors import CORS
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
+CORS(app)
 
 # Constants
 DURATION = 6  # Recording duration in seconds
@@ -24,12 +27,34 @@ BEEP_FREQUENCIES = {
 }
 
 # Create a new report file with timestamp
-report_filename = f"beep_report_{time.strftime('%Y%m%d_%H%M%S')}.txt"
+# report_filename = f"beep_report_{time.strftime('%Y%m%d_%H%M%S')}.txt"
+report_filename = "daily_beep_report.txt"
+
+@app.route('/get_report', methods=['GET'])
+def get_report():
+    try:
+        # Use the current directory (where livedetection.py is located)
+        report_path = os.path.join(os.getcwd(), report_filename)
+        
+        if not os.path.exists(report_path):
+            return "Report file not found", 404
+        
+        return send_file(report_path, as_attachment=True)
+    except Exception as e:
+        return str(e), 500
+
 
 def write_to_report(data):
-    """Writes beep data to the report file."""
-    with open(report_filename, "a") as file:
-        file.write(data + "\n")
+    """Writes beep data to the report file in the backend folder."""
+    report_path = os.path.join(os.getcwd(), report_filename)  # Get the full path for the report file
+    
+    try:
+        with open(report_path, "a") as file:  # Open the file in append mode
+            file.write(data + "\n")  # Append data to the file
+        print("Report entry saved.")
+    except Exception as e:
+        print(f"Error writing to report: {e}")
+
 
 def record_audio():
     """Records audio from the microphone and saves it as a WAV file."""
@@ -101,7 +126,10 @@ def run_detection():
 
 # Start the Flask server
 if __name__ == "__main__":
+    # Clear the report file at startup
+    if os.path.exists(report_filename):
+        os.remove(report_filename)
+        print(f"🗑️ Deleted old report file: {report_filename}")
     print("🚀 Starting Flask backend...")
     socketio.start_background_task(run_detection)
     socketio.run(app, debug=True, port=5000)
-
