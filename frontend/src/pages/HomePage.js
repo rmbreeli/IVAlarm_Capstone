@@ -38,7 +38,7 @@ function HomePage() {
   const [highPriorityNotifications, setHighPriorityNotifications] = useState([]);
   const [notificationId, setNotificationId] = useState(1);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -101,13 +101,13 @@ function HomePage() {
     setShowLogoutModal(true);
   };
 
-  const handleEmailReport = () => {
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-    console.log(`Email report to: ${email}`);
-  };
+  // const handleEmailReport = () => {
+  //   if (!email || !/\S+@\S+\.\S+/.test(email)) {
+  //     alert("Please enter a valid email address.");
+  //     return;
+  //   }
+  //   console.log(`Email report to: ${email}`);
+  // };
 
   const handleViewReport = () => {
     console.log("View report");
@@ -185,7 +185,7 @@ function HomePage() {
               &times;
             </button>
             <div className="popup-content">
-              <div className="email-row">
+              {/* <div className="email-row">
                 <label htmlFor="emailReport">Email report:</label>
                 <input
                   id="emailReport"
@@ -197,7 +197,7 @@ function HomePage() {
                 <button className="send-button" onClick={handleEmailReport}>
                   Send
                 </button>
-              </div>
+              </div> */}
 
               <div className="button-row">
                 <label>View days report:</label>
