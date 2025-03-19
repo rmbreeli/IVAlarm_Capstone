@@ -132,4 +132,4 @@ if __name__ == "__main__":
         print(f"🗑️ Deleted old report file: {report_filename}")
     print("🚀 Starting Flask backend...")
     socketio.start_background_task(run_detection)
-    socketio.run(app, debug=True, port=5000)
+    socketio.run(app, debug=False, port=5000)
