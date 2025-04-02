@@ -7,6 +7,7 @@ from flask import Flask
 from flask import send_file
 from flask_socketio import SocketIO
 from flask_cors import CORS
+import random
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -21,9 +22,9 @@ FILENAME = "temp_recording.wav"
 
 # Beep Frequency Mapping
 BEEP_FREQUENCIES = {
-    "LOW BEEP": 2000,
-    "MEDIUM BEEP": 2100,
-    "HIGH BEEP": 2200
+    "LOW": 2000,
+    "MEDIUM": 2100,
+    "HIGH": 2200
 }
 
 # Create a new report file with timestamp
@@ -97,16 +98,20 @@ def analyze_audio():
 
     print(f"🎵 Highest Pitch Detected: {highest_pitch:.2f} Hz")
 
+    #Generate a random room number...
+    room_number = random.randint(100, 399)
+
     if beep_type != "Unknown":
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-        report_entry = f"[{timestamp}] Pitch: {highest_pitch:.2f} Hz, Type: {beep_type}, Volume: {volume:.2f}"
+        report_entry = f"[{timestamp}], Type: {beep_type}, Room: {room_number}"
         write_to_report(report_entry)
 
     # Emit data to frontend
     socketio.emit("beep_detected", {
         "pitch": float(highest_pitch),
         "type": beep_type,
-        "volume": float(volume)
+        "volume": float(volume),
+        "room": room_number
     })
 
 def cleanup():

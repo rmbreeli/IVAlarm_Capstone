@@ -55,9 +55,9 @@ function HomePage() {
       console.log("Received beep event:", data);
 
       const priorityMap = {
-        "LOW BEEP": setLowPriorityNotifications,
-        "MEDIUM BEEP": setMediumPriorityNotifications,
-        "HIGH BEEP": setHighPriorityNotifications,
+        "LOW": setLowPriorityNotifications,
+        "MEDIUM": setMediumPriorityNotifications,
+        "HIGH": setHighPriorityNotifications,
       };
 
       const updateNotifications = priorityMap[data.type];
