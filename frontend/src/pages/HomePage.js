@@ -101,17 +101,104 @@ function HomePage() {
     setShowLogoutModal(true);
   };
 
-  // const handleEmailReport = () => {
-  //   if (!email || !/\S+@\S+\.\S+/.test(email)) {
-  //     alert("Please enter a valid email address.");
-  //     return;
-  //   }
-  //   console.log(`Email report to: ${email}`);
-  // };
 
   const handleViewReport = () => {
-    console.log("View report");
+    fetch("http://localhost:5000/get_report")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.text();
+      })
+      .then((text) => {
+        const lines = text.split("\n").filter((line) => line.trim() !== "");
+  
+        const sorted = {
+          HIGH: [],
+          MEDIUM: [],
+          LOW: [],
+          UNKNOWN: [],
+        };
+  
+        lines.forEach((line) => {
+          if (line.includes("HIGH")) sorted.HIGH.push(line);
+          else if (line.includes("MEDIUM")) sorted.MEDIUM.push(line);
+          else if (line.includes("LOW")) sorted.LOW.push(line);
+          else sorted.UNKNOWN.push(line);
+        });
+  
+        const doc = new jsPDF();
+        let y = 30; // Start a bit lower to allow space for the title
+  
+        const pageWidth = doc.internal.pageSize.getWidth();
+  
+        // Title
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(22);
+        const title = "Daily Beep Report";
+        const titleWidth = doc.getTextWidth(title);
+        doc.text(title, (pageWidth - titleWidth) / 2, y);
+        y += 12;
+  
+        // Date/time
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(12);
+        const now = new Date();
+        const dateTime = `${now.toLocaleDateString()} at ${now.toLocaleTimeString()}`;
+        const dateWidth = doc.getTextWidth(dateTime);
+        doc.text(dateTime, (pageWidth - dateWidth) / 2, y);
+        y += 20; // Increase spacing for better readability
+  
+        // Function to write the notifications by priority
+        const writeLines = (title, entries, color) => {
+          doc.setFont("Helvetica", "bold");
+          doc.setFontSize(16);
+          doc.text(`${title} PRIORITY`, 10, y);
+  
+          // Draw a colored line under the header
+          const headerWidth = pageWidth - 20; // Make the line span almost the full page width
+          const lineX = 10;
+          const lineY = y + 3; // Move the line closer to the title by reducing the offset
+  
+          doc.setDrawColor(color[0], color[1], color[2]); // Set the color (RGB)
+          doc.setLineWidth(1); // Make the line thicker
+          doc.line(lineX, lineY, lineX + headerWidth, lineY); // Draw the line
+  
+          y += 10; // Space after the header and line
+  
+          doc.setFont("Helvetica", "normal");
+          doc.setFontSize(12);
+  
+          if (entries.length === 0) {
+            doc.text("No Notifications", 10, y);
+            y += 6;
+          } else {
+            entries.forEach((entry) => {
+              if (y > 270) {
+                doc.addPage();
+                y = 30; // Start new page with some padding
+              }
+              doc.text(entry, 10, y);
+              y += 6;
+            });
+          }
+  
+          y += 15; // Add some space between sections
+        };
+  
+        writeLines("HIGH", sorted.HIGH, [255, 127, 127]); 
+        writeLines("MEDIUM", sorted.MEDIUM, [255, 213, 107]); 
+        writeLines("LOW", sorted.LOW, [161, 227, 161]); 
+  
+        // Instead of downloading the PDF, open it in a new window
+        const pdfData = doc.output("dataurlnewwindow"); // This generates and opens the PDF in a new window
+
+      })
+      .catch((error) => {
+        console.error("Error generating the report:", error);
+      });
   };
+  
 
   const handleDownload = () => {
     fetch("http://localhost:5000/get_report")
