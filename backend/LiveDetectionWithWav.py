@@ -14,15 +14,15 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
 
 # Constants
-DURATION = 6  # Recording duration in seconds
+DURATION = 5  # Recording duration in seconds
 SAMPLE_RATE = 44100  # Standard audio sample rate
-THRESHOLD_DB = 0  # Noise gate threshold (in dB)
+THRESHOLD_DB = -15  # Noise gate threshold (in dB)
 TOLERANCE = 25  # Frequency tolerance for classification
 FILENAME = "temp_recording.wav"
 
 # Beep Frequency Mapping
 BEEP_FREQUENCIES = {
-    "LOW": 2000,
+    "LOW": 3600,
     "MEDIUM": 2100,
     "HIGH": 2200
 }
