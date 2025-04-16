@@ -21,6 +21,33 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.header-box {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center horizontally */
+  padding: 10px;
+}
+
+.header-box img {
+  image-rendering: pixelated;
+  width: 200px;
+  height: 120px;
+  margin-right: 20px;
+}
+
+.header-box .title-container { /* Add a container for the title */
+  flex-grow: 1;
+  text-align: center;
+}
+
+.header-box h1 {
+  font-size: 24px;
+}
+
+.logout-button {
+  margin-left: 20px; /* add back some margin that was removed by justify content center */
+}
+
 /* Info Box */
 .info-box {
   background: #ffffff;

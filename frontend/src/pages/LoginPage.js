@@ -33,6 +33,9 @@ function LoginPage() {
   return (
     <div className="login-container">
       <div className="login-box">
+        <div>
+          <img style={{imageRendering: "pixelated", width: 200, height: 120}} src="/logo.png" alt="Logo 192" />
+        </div>
         <h1>IV Alarm System Login</h1>
         <p>Your Reliable Partner in Care Organization</p>
         <input
