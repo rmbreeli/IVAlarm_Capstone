@@ -313,7 +313,10 @@ function HomePage() {
   return (
     <div className="home-page">
       <div className="header-box">
-        <h1>IV Alarm System Organizer</h1>
+        <img src="/greyLogo.png" alt="Logo 192" />
+        <div className="title-container">
+          <h1 style={{paddingRight: 200}}>IV Alarm System Organizer</h1>
+        </div>
         <button className="logout-button" onClick={onLogoutClick}>
           Logout
         </button>
