@@ -16,6 +16,7 @@ This project is built using a combination of different languages and technologie
 Ensure you have the following installed before setting up the project:
 - Node.js (LTS version recommended)
 - Python (3.x version recommended)
+- Git
 
 ## Downloading the Project
 To get started with the IV Alarm System, you'll need to download the project repository. You can do this by cloning the GitHub repository or downloading the ZIP file.
@@ -60,6 +61,16 @@ cd frontend
 npm install
 npm install react-router-dom socket.io-client web-vitals jspdf
 ```
+
+## Supabase Setup
+We use Supabase for authentication and database services. To configure Supabase:
+1. Create a .env.local file inside the frontend directory
+2. Add the following keys to you .env file:
+```
+REACT_APP_SUPABASE_URL='your_supabase-url'
+REACT_APP_SUPABASE_ANON_KEY='your_supabase_anon_key'
+```
+Replace `your_supabase_url` and `your_supabase_anon_key` with your actual Supbase project credentials. These can be found under Settings > API.
 
 ## Running the Project
 Follow these steps to run the project:
