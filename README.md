@@ -1,6 +1,6 @@
 # Capstone Project: IV Alarm System
 
-This project is part of our **Senior Capstone Project** at the **University of Arkansas** (UARK) for the Fall 2024 - Spring 2025 academic year. The goal of this project is to assist nurses in identifying IV alarm signals in hospitals. By analyzing the pitch of IV alarms, we aim to automate the alerting process and enable faster responses to critical situations, improving patient care and hospital effciency.
+This project is our **Senior Capstone Project** at the **University of Arkansas** (UARK) for the Fall 2024 - Spring 2025 academic year which placed first overall at the university. The goal of this project is to assist nurses in identifying IV alarm signals in hospitals. By analyzing the pitch of IV alarms, we aim to automate the alerting process and enable faster responses to critical situations, improving patient care and hospital effciency.
 
 Our system detects alarm sounds in real-time, categorizes them by pitch, and sends notifications to the nursing staff. The frontend web interface provides a user-friendly dashboard for nurses to monitor alarms and receive instant alerts, enhancing their ability to respond quickly.
 
